@@ -1,0 +1,25 @@
+framework:
+    messenger:
+        failure_transport: failed
+        transports:
+            failed: 'doctrine://default?queue_name=failed'
+
+            rsync_queue:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    stream: rsync_queue
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 5000
+
+        routing:
+            App\Message\TestMessage:   rsync_queue
+            App\Message\NoticeMessage: rsync_queue
+
+# when@test:
+#    framework:
+#        messenger:
+#            transports:
+#                rsync_queue: 'in-memory://'

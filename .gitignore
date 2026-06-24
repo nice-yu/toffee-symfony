@@ -1,0 +1,16 @@
+
+###> symfony/framework-bundle ###
+.claude/
+.gstack/
+.idea/
+.trae/
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/config/cert/*.pem
+/public/bundles/
+/var/
+/vendor/
+/migrations/*
+###< symfony/framework-bundle ###

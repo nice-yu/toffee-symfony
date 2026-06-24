@@ -1,0 +1,29 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+    # 缓存配置 redis
+    #    cache:
+    #        app: cache.adapter.redis
+    #        system: cache.adapter.redis
+
+    # 缓存配置 file
+    cache:
+        app: cache.adapter.filesystem
+        system: cache.adapter.system
+
+    # 禁用会话
+    session:
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native
+
+    # 禁用表单和CSRF（纯API不需要）
+    csrf_protection: false
+    form: false
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file
