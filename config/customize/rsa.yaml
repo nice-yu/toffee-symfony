@@ -1,0 +1,7 @@
+# rsa 配置
+parameters:
+    rea.config:
+        bits: 2048
+        public: '%kernel.project_dir%/config/cert/public.pem'
+        private: '%kernel.project_dir%/config/cert/private.pem'
+        config: '%kernel.project_dir%/config/cert/openssl.cnf'

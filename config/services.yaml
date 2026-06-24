@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+imports:
+    - { resource: './customize/*.yaml' }
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    # 短信服务责任链：阿里云 → 腾讯云降级
+    App\Contract\SmsServiceInterface: '@App\Service\Sms\ChainSmsService'
+
+    # Redis Utils parameter
+    App\Utils\RedisUtils:
+        arguments:
+            $redisConfig: '%redis.config%'
+
+    # Rsa Utils parameter
+    App\Utils\RsaUtils:
+        arguments:
+            $reaConfig: '%rea.config%'
+
+    # 阿里云短信服务
+    App\Service\Sms\AliCloudSmsService:
+        arguments:
+            $appId: '%env(string:ALI_SMS_APP_KEY)%'
+            $secret: '%env(string:ALI_SMS_APP_SECRET)%'
+            $name: '%env(string:ALI_SMS_APP_NAME)%'
+            $tempId: '%env(string:ALI_SMS_TEMPLATE_ID)%'
+
+    # WeChat 小程序服务 — 子类共享父类构造函数参数
+    App\Service\WeChat\MiniProgram\:
+        resource: '../src/Service/WeChat/MiniProgram/'
+        bind:
+            $appId: '%env(default::string:WECHAT_APPID)%'
+            $secret: '%env(default::string:WECHAT_APP_SECRET)%'
+
